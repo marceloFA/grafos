@@ -40,6 +40,7 @@ if eulerian_graph.is_eulerian():
 
 
 
+
 g = Graph()
 g.add_edge((1,2))
 g.add_edge((1,3))
@@ -56,6 +57,12 @@ start = 1
 visited_vertices = g.dfs_search(start)
 print('Visited vertices were:'+str(visited_vertices))
 
+
+#Perform Cormen DFS on the graph:
+color, discovery_time, finish_time = g.cormen_dfs()
+print('Final color of vertices: ',color)
+print('Vertices discovery time:',discovery_time)
+print('Vertice finish time: ',finish_time)
 '''
 
 Next tasks:

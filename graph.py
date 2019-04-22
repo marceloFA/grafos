@@ -175,18 +175,47 @@ class Graph:
   def dfs_search(self,start):
     ''' Perform a deep first search on the graph '''
     graph = self.simple_represented()
+    time = {}
     stack   = [start]      # Vertices to be visited
     visited = set()        # Vertices already visited
 
     while stack:
         vertice = stack.pop()
+        time[vertice] = 0
+
         if vertice not in visited:
-            
             visited.add(vertice)
             #print("Visited: "+str(visited))
-
             stack.extend(graph[vertice] - visited)
             #print('Stack: '+str(stack)+'\n')
 
     return visited
 
+  def cormen_dfs(self):
+    '''Perform a deeep first search on the graph
+     based on Cormen algorithm for this task '''
+    
+    graph = self.simple_represented()
+    color = {vertice: 'white' for vertice in self.get_vertices_list()}
+    discovery_time = {vertice: None for vertice in self.get_vertices_list()}
+    finish_time = {vertice: None for vertice in self.get_vertices_list()}
+    previous_vertice = {vertice: None for vertice in self.get_vertices_list()}
+    current_time = 0
+
+    for vertice in graph.keys():
+      if color[vertice] == 'white':
+        visit(vertice,graph,color,discovery_time,finish_time,previous_vertice,current_time)
+
+    return color,discovery_time,finish_time
+
+def visit(vertice,graph,color,discovery_time,finish_time,previous_vertice,current_time):
+  color[vertice] = 'grey'
+  current_time += 1
+  discovery_time[vertice] = current_time
+  for adjacency in graph[vertice]:
+    if color[adjacency] == 'white':
+      previous_vertice[adjacency] = vertice
+      visit(adjacency,graph,color,discovery_time,finish_time,previous_vertice,current_time)
+  color[vertice] = 'black'
+  current_time += 1
+  finish_time[vertice] = current_time
