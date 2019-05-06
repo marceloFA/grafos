@@ -223,8 +223,10 @@ class Graph:
     finish_time[vertice] = current_time
 
 
-  def cormen_bfs(self):
-    ''' Implements Cormen's BFS algorithm'''
+  def cormen_bfs(self,start=None):
+    ''' Implements Cormen's BFS algorithm
+        start (int): optional arguement
+    '''
     #Data structures needed:
     graph = self.simple_represented()
     color = {vertice: 'white' for vertice in self.get_vertices_list()}
@@ -234,7 +236,8 @@ class Graph:
 
 
     #BFS starts from the first vertice present in the graph definiton:
-    start = next(iter(graph))
+    if not start:
+        start = next(iter(graph))
     queue.append(start)
 
     while queue:
@@ -247,3 +250,21 @@ class Graph:
           queue.append(adjacency)
       color[vertice] = 'black'
     return start, color, distance_from_start
+
+  def connected_components(self):
+    '''Finds all connected components of a graph, based on the DFS search algorithm'''
+    graph = self.simple_represented()
+    id = 0
+    ids = {vertice: None for vertice in self.get_vertices_list()}
+    for vertice in graph.keys():
+      #faz uma busca começando pelo vértice:
+      _, colors, _ = self.cormen_bfs(vertice)
+      #verifica quais foram marcados como preto, adiciona eles como um id novo:
+      for v in graph.keys():
+        if colors[v] == 'black' and not ids[v]:
+          ids[v] = id
+          flag = True
+      if flag:
+          id += 1
+          flag = False
+    return ids

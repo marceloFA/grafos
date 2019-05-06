@@ -73,6 +73,11 @@ print('Vertices distances from {} are: \n{}'.format(start,distance_from_start))
 print('Vertice finish time: ',finish_time)
 
 
+
+g = Graph([1,2,3,4,5])
+g.add_edge((2,3))
+print('\nOs componentes conectados do grafo {}\n são:'.format(g.simple_represented()))
+print(g.connected_components())
 '''
 
 Next tasks:
