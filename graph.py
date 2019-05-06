@@ -1,9 +1,10 @@
 from vertice import Vertice
 from operator import itemgetter
+from random import choice
 class Graph:
   ''' Represents a graph through python's dictionaries'''
   def __init__(self,vertices=[]):
-      ''' Creates a graph 
+      ''' Creates a graph
         Arguments:
         vertices: A list of vertices to be added to the graph. Can be empty
       '''
@@ -14,8 +15,8 @@ class Graph:
       if vertices:
         for key in vertices:
           self.vertices_dict[key] = Vertice(key)
-      
-      
+
+
       self.n_vertices = len(vertices)
       self.n_edges = 0
 
@@ -32,7 +33,7 @@ class Graph:
       return
     #if vertice already exists:
     if vertice in self.vertices_dict.keys():
-      raise ValueError('Vertice {} already exists in graph'.format(vertice)) 
+      raise ValueError('Vertice {} already exists in graph'.format(vertice))
       return
 
     self.vertices_dict[vertice] = Vertice(vertice)
@@ -40,12 +41,12 @@ class Graph:
 
 
   def add_edge(self,edge,cost=0):
-    ''' Adds a edge to the graph 
+    ''' Adds a edge to the graph
         Arguments:
         edge: a tuple containing the origin and destiation vertices of the edge
-        TODO: 
+        TODO:
     '''
-    if len(edge) != 2: 
+    if len(edge) != 2:
       raise ValueError('Edge must have exactly 2 vertices')
       return
 
@@ -57,14 +58,14 @@ class Graph:
         self.add_vertice(origin)
     if destination not in self.vertices_dict:
         self.add_vertice(destination)
-    
+
 
     if origin != destination:
       self.get_vertice(origin).new_adjacency(self.get_vertice(destination))
-      
+
       self.get_vertice(destination).new_adjacency(self.get_vertice(origin))
-      
-    else: 
+
+    else:
       self.get_vertice(origin).new_adjacency(self.get_vertice(destination))
 
     self.n_edges += 1
@@ -92,12 +93,12 @@ class Graph:
       if destination in vertice.get_adjacencies_list():
         return True
     return False
-       
+
 
   def get_vertices_list(self):
     ''' Return a list of all the graph's vertices  '''
     return list(self.vertices_dict.keys())
-  
+
   def get_vertices_dict(self):
     ''' Return whole vertices dictionary '''
     return self.vertices_dict
@@ -110,11 +111,11 @@ class Graph:
   def get_adjacent_vertices(self,v):
     ''' Returns a list of all vertices adjacent to vertice 'v' '''
     pass
-    
+
 
   def __str__(self):
     pass
-    
+
 
   def has(self,n):
     ''' Check if the graph contains a vertice named n
@@ -127,15 +128,15 @@ class Graph:
   def get_degrees_list(self):
     ''' return a degrees list'''
     return [vertice.get_degree() for key,vertice in self.vertices_dict.items()]
-  
+
 
   def get_degrees_dict(self):
     ''' Return a degree list containing tuples represeting (vertice_name, vertice_degree)'''
     return dict([(vertice.get_name() , vertice.get_degree()) for key, vertice in self.vertices_dict.items()])
-    
-    
+
+
   def max_degree_vertice(self):
-    ''' Return tuple containing (vertice_name,degree_of_vertice) 
+    ''' Return tuple containing (vertice_name,degree_of_vertice)
         TODO: must check if therse 2 vertices with same max degree
     '''
     degrees_dict = self.get_degrees_dict()
@@ -157,7 +158,7 @@ class Graph:
   def is_eulerian(self):
     ''' Verify if graph is eulerian (all vertices must have even degrees)'''
     return all([True if degree %2 == 0 else False for degree in self.get_degrees_list()])
-    
+
 
   def has_open_eulerian_path(self):
     ''' Check if graph contains an open eulerian path'''
@@ -193,8 +194,8 @@ class Graph:
 
   def cormen_dfs(self):
     '''Perform a deeep first search on the graph
-     based on Cormen algorithm for this task '''
-    
+    based on Cormen algorithm for this task '''
+
     graph = self.simple_represented()
     color = {vertice: 'white' for vertice in self.get_vertices_list()}
     discovery_time = {vertice: None for vertice in self.get_vertices_list()}
@@ -204,18 +205,45 @@ class Graph:
 
     for vertice in graph.keys():
       if color[vertice] == 'white':
-        visit(vertice,graph,color,discovery_time,finish_time,previous_vertice,current_time)
+        self.visit(vertice,graph,color,discovery_time,finish_time,previous_vertice,current_time)
 
     return color,discovery_time,finish_time
 
-def visit(vertice,graph,color,discovery_time,finish_time,previous_vertice,current_time):
-  color[vertice] = 'grey'
-  current_time += 1
-  discovery_time[vertice] = current_time
-  for adjacency in graph[vertice]:
-    if color[adjacency] == 'white':
-      previous_vertice[adjacency] = vertice
-      visit(adjacency,graph,color,discovery_time,finish_time,previous_vertice,current_time)
-  color[vertice] = 'black'
-  current_time += 1
-  finish_time[vertice] = current_time
+  def visit(self,vertice,graph,color,discovery_time,finish_time,previous_vertice,current_time):
+    ''' Cormen's DFS helper function for visiting a vertice'''
+    color[vertice] = 'grey'
+    current_time += 1
+    discovery_time[vertice] = current_time
+    for adjacency in graph[vertice]:
+      if color[adjacency] == 'white':
+        previous_vertice[adjacency] = vertice
+        self.visit(adjacency,graph,color,discovery_time,finish_time,previous_vertice,current_time)
+    color[vertice] = 'black'
+    current_time += 1
+    finish_time[vertice] = current_time
+
+
+  def cormen_bfs(self):
+    ''' Implements Cormen's BFS algorithm'''
+    #Data structures needed:
+    graph = self.simple_represented()
+    color = {vertice: 'white' for vertice in self.get_vertices_list()}
+    distance_from_start = {vertice: 0 for vertice in self.get_vertices_list()} # must be changed to distance
+    previous_vertice = {vertice: None for vertice in self.get_vertices_list()}
+    queue = [] # only operations allowed are append (add to queue) and pop (remove form queue)
+
+
+    #BFS starts from the first vertice present in the graph definiton:
+    start = next(iter(graph))
+    queue.append(start)
+
+    while queue:
+      vertice = queue.pop()
+      for adjacency in graph[vertice]:
+        if color[adjacency] == 'white':
+          color[adjacency] == 'grey'
+          distance_from_start[adjacency] = distance_from_start[vertice] + 1
+          previous_vertice[adjacency] = vertice
+          queue.append(adjacency)
+      color[vertice] = 'black'
+    return start, color, distance_from_start

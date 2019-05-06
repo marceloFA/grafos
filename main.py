@@ -13,7 +13,7 @@ g.add_edge((4,0))
 for vertice,adjacencies in g.simple_represented().items():
   if adjacencies:
     print('Vertice {} has the following adjacencies: {}'.format(vertice,adjacencies))
-  
+
 
 vertice, degree = g.max_degree_vertice()
 print('\nThe vertice with highest degree is {}, with degree {} '.format(vertice,degree))
@@ -22,7 +22,7 @@ print('\nNumber of loops in graph is:',g.n_loops())
 
 
 edge = (4,4)
-if g.has_edge((edge)): 
+if g.has_edge((edge)):
   print('\nTrue! this graph does have a '+str(edge)+' edge')
 else:
   print('False!')
@@ -58,11 +58,21 @@ visited_vertices = g.dfs_search(start)
 print('Visited vertices were:'+str(visited_vertices))
 
 
-#Perform Cormen DFS on the graph:
+print('\n\nPerform Cormen\'s DFS on the graph:')
 color, discovery_time, finish_time = g.cormen_dfs()
 print('Final color of vertices: ',color)
 print('Vertices discovery time:',discovery_time)
 print('Vertice finish time: ',finish_time)
+print('-------------------------------------------')
+
+
+print('Perform Cormen\'s BFS on the graph')
+start, color, distance_from_start = g.cormen_bfs()
+print('Final color of vertices: ',color)
+print('Vertices distances from {} are: \n{}'.format(start,distance_from_start))
+print('Vertice finish time: ',finish_time)
+
+
 '''
 
 Next tasks:
